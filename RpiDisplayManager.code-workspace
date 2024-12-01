@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "standalone",
+			"path": "standalone"
+		},
+		{
+			"name": "four",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"string": "cpp"
+		}
+	}
+}
