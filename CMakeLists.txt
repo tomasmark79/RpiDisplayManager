@@ -41,12 +41,12 @@ CPMAddPackage(
     GITHUB_REPOSITORY olikraus/u8g2
 )
 
-# # ---- WiringPi ----
-CPMAddPackage(
-    NAME wiringPi
-    GIT_TAG master
-    GITHUB_REPOSITORY WiringPi/WiringPi
-)
+# wiringPi - maunual installation - Linux Debian Based
+# $ git clone https://github.com/WiringPi/WiringPi.git
+# $ cd WiringPi
+# $ ./build debian
+# $ mv debian-template/wiringpi-3.0-1.deb .
+# $ sudo apt install ./wiringpi-3.0-1.deb
 
 # ---- Add source files ----
 
@@ -58,8 +58,6 @@ file(
     CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.h"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.hpp"
 )
 
 file(
@@ -70,10 +68,6 @@ file(
     # --- u8g2 ---
     "${u8g2_SOURCE_DIR}/sys/raspi_gpio/hal/*.c"
     "${u8g2_SOURCE_DIR}/csrc/*.c"
-    # --- WiringPi ---
-    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.cpp"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.c"
-    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.cpp"
 )
 
 # ---- Create library ----
@@ -85,8 +79,10 @@ add_library(${PROJECT_NAME} ${headers} ${sources})
 # being a cross-platform target, we enforce standards conformance on MSVC
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
+# ---- Create an installable target ----
+
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt wiringPi)
 
 # include directories
 target_include_directories(
@@ -95,8 +91,6 @@ target_include_directories(
            # --- u8g2 ---
            $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/csrc/>
            $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/sys/raspi_gpio/hal/>
-           # --- WiringPi ---
-           # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi>
            # --- project version header ---
            $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )

@@ -33,4 +33,5 @@ add_executable(${PROJECT_NAME} ${sources})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "RpiDisplayManagerStandalone")
 
-target_link_libraries(${PROJECT_NAME} RpiDisplayManager::RpiDisplayManager cxxopts fmt::fmt)
+target_link_libraries(${PROJECT_NAME} RpiDisplayManager::RpiDisplayManager cxxopts fmt::fmt wiringPi)
+  
