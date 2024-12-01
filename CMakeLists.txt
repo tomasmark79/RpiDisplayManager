@@ -5,18 +5,18 @@ cmake_minimum_required(VERSION 3.14...3.22)
 
 # Note: update this to your new project's name and version
 project(
-  RpiDisplayManager
-  VERSION 1.0
-  LANGUAGES CXX
+    RpiDisplayManager
+    VERSION 1.0
+    LANGUAGES C CXX
 )
 
 # ---- Include guards ----
 
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(
-    FATAL_ERROR
-      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
-  )
+    message(
+        FATAL_ERROR
+            "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
+    )
 endif()
 
 # ---- Add dependencies via CPM ----
@@ -28,51 +28,54 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
 CPMAddPackage(
-  NAME fmt
-  GIT_TAG 11.0.2
-  GITHUB_REPOSITORY fmtlib/fmt
-  OPTIONS "FMT_INSTALL YES" # create an installable target
+    NAME fmt
+    GIT_TAG 11.0.2
+    GITHUB_REPOSITORY fmtlib/fmt
+    OPTIONS "FMT_INSTALL YES" # create an installable target
 )
 
 # u8g2 main
 CPMAddPackage(
-  NAME u8g2
-  GIT_TAG master
-  GITHUB_REPOSITORY olikraus/u8g2
-  DOWNLOAD_ONLY YES
+    NAME u8g2
+    GIT_TAG master
+    GITHUB_REPOSITORY olikraus/u8g2
 )
 
-# wiringPi
-CPMAddPackage(
-  NAME wiringPi
-  GIT_TAG master
-  GITHUB_REPOSITORY WiringPi/WiringPi
-  DOWNLOAD_ONLY YES
-)
+# # ---- WiringPi ----
+# CPMAddPackage(
+#     NAME wiringPi
+#     GIT_TAG master
+#     GITHUB_REPOSITORY WiringPi/WiringPi
+#     #DOWNLOAD_ONLY YES
+# )
 
 # ---- Add source files ----
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
 # automatically. Keep that in mind when changing files, or explicitly mention them here.
-file(GLOB_RECURSE headers CONFIGURE_DEPENDS
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.hpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.hpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringPi-src/wiringPi/*.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringPi-src/wiringPi/*.hpp"
-) 
+file(
+    GLOB_RECURSE
+    headers
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
 
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS 
-  "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.c"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.c"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.cpp"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringPi-src/wiringPi/*.c"
-  "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringPi-src/wiringPi/*.cpp"
+    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.h"
+    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.hpp"
+)
+
+file(
+    GLOB_RECURSE
+    sources
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.cpp"
+    
+    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.cpp"
+    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.c"
+    # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.cpp"
 )
 
 # ---- Create library ----
@@ -80,7 +83,6 @@ file(GLOB_RECURSE sources CONFIGURE_DEPENDS
 # Note: for header-only libraries change all PUBLIC flags to INTERFACE and create an interface
 # target: add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME} ${headers} ${sources})
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 
 # being a cross-platform target, we enforce standards conformance on MSVC
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
@@ -88,13 +90,13 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>
 # Link dependencies
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
-
 target_include_directories(
-  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc>
-                         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal>
-                         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi>
-                         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
+    ${PROJECT_NAME}
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc>
+           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal>
+          #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi>
+           $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
 # ---- Create an installable target ----
@@ -105,13 +107,13 @@ target_include_directories(
 string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
 
 packageProject(
-  NAME ${PROJECT_NAME}
-  VERSION ${PROJECT_VERSION}
-  NAMESPACE ${PROJECT_NAME}
-  BINARY_DIR ${PROJECT_BINARY_DIR}
-  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
-  INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
-  VERSION_HEADER "${VERSION_HEADER_LOCATION}"
-  COMPATIBILITY SameMajorVersion
-  DEPENDENCIES "fmt 9.1.0"
+    NAME ${PROJECT_NAME}
+    VERSION ${PROJECT_VERSION}
+    NAMESPACE ${PROJECT_NAME}
+    BINARY_DIR ${PROJECT_BINARY_DIR}
+    INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+    INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
+    VERSION_HEADER "${VERSION_HEADER_LOCATION}"
+    COMPATIBILITY SameMajorVersion
+    DEPENDENCIES "fmt 9.1.0"
 )

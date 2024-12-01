@@ -8,8 +8,6 @@
 auto main(int argc, char **argv) -> int
 {
     fmt::print("Raspberry Display Manager v{}\n", RPIDISPLAYMANAGER_VERSION);
-
-    
-
+    DisplayBroker displayBroker;
     return 0;
 }
