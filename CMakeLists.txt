@@ -42,12 +42,11 @@ CPMAddPackage(
 )
 
 # # ---- WiringPi ----
-# CPMAddPackage(
-#     NAME wiringPi
-#     GIT_TAG master
-#     GITHUB_REPOSITORY WiringPi/WiringPi
-#     #DOWNLOAD_ONLY YES
-# )
+CPMAddPackage(
+    NAME wiringPi
+    GIT_TAG master
+    GITHUB_REPOSITORY WiringPi/WiringPi
+)
 
 # ---- Add source files ----
 
@@ -59,7 +58,6 @@ file(
     CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
-
     # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.h"
     # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.hpp"
 )
@@ -69,10 +67,10 @@ file(
     sources
     CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc/*.cpp"
-    
+    # --- u8g2 ---
+    "${u8g2_SOURCE_DIR}/sys/raspi_gpio/hal/*.c"
+    "${u8g2_SOURCE_DIR}/csrc/*.c"
+    # --- WiringPi ---
     # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal/*.cpp"
     # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.c"
     # "${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi/*.cpp"
@@ -90,12 +88,16 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>
 # Link dependencies
 target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
+# include directories
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/csrc>
-           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/u8g2-src/sys/raspi_gpio/hal>
-          #  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi>
+           # --- u8g2 ---
+           $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/csrc/>
+           $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/sys/raspi_gpio/hal/>
+           # --- WiringPi ---
+           # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/wiringpi-src/wiringPi>
+           # --- project version header ---
            $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
