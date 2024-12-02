@@ -41,13 +41,6 @@ CPMAddPackage(
     GITHUB_REPOSITORY olikraus/u8g2
 )
 
-# wiringPi - maunual installation - Linux Debian Based
-# $ git clone https://github.com/WiringPi/WiringPi.git
-# $ cd WiringPi
-# $ ./build debian
-# $ mv debian-template/wiringpi-3.0-1.deb .
-# $ sudo apt install ./wiringpi-3.0-1.deb
-
 # ---- Add source files ----
 
 # Note: globbing sources is considered bad practice as CMake's generators may not detect new files
@@ -82,7 +75,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>
 # ---- Create an installable target ----
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt wiringPi)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 
 # include directories
 target_include_directories(
@@ -91,6 +84,7 @@ target_include_directories(
            # --- u8g2 ---
            $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/csrc/>
            $<BUILD_INTERFACE:${u8g2_SOURCE_DIR}/sys/raspi_gpio/hal/>
+
            # --- project version header ---
            $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )

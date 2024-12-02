@@ -3,13 +3,19 @@
 
 class DisplayBroker
 {
-public:
+  public:
     DisplayBroker();
     ~DisplayBroker();
 
-private:
-// Funkce pro přepnutí kanálu na TCA9548A
-  int selectI2CDevice(int fd, int channel);
+  private:
+
+    int selectI2CChannel(int channel);
+
+    bool SetupTest();
+    void EndTest();
+    void TestLoop();
+
+    int use_u8g2();
 };
 
 #endif // __DISPLAYBROKER_H__

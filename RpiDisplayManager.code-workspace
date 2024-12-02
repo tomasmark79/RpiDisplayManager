@@ -84,7 +84,9 @@
 			"cinttypes": "cpp",
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
-			"variant": "cpp"
+			"variant": "cpp",
+			"raspi_gpio_hal.h": "c",
+			"bcm2835.h": "c"
 		}
 	}
 }
