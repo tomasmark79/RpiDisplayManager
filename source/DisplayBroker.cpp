@@ -12,9 +12,7 @@ extern "C"
 
 // Multiplexer TCA9548A address
 #define TCA9548A_ADDR 0x70
-#define OLEDS 4
-
-#define DEBUGING 1
+#define OLEDS 8
 
 DisplayBroker::DisplayBroker() { this->FourOledScenarioVia_u8g2(); }
 
@@ -60,11 +58,8 @@ int DisplayBroker::FourOledScenarioVia_u8g2()
             u8g2_DrawStr(&oled[i], 0, 30, buf);
             u8g2_DrawStr(&oled[i], 0, 60, buf2);
 
-            if (DEBUGING)
-            {
-                std::cout << "Displaying on OLED " << i << std::endl;
-                std::cout << "Counter: " << counter << std::endl;
-            }
+            //std::cout << "Displaying on OLED " << i << std::endl;
+            //std::cout << "Counter: " << counter << std::endl;
 
             u8g2_SendBuffer(&oled[i]);
 
@@ -110,6 +105,7 @@ int DisplayBroker::selectI2CChannel(int channel)
         return 1;
     }
 
-    bcm2835_delay(50); // Short delay for stabilization
+    bcm2835_delay(10); // Short delay for stabilization
+
     return 0;
 }
