@@ -7,10 +7,10 @@
 
 extern "C"
 {
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
 #include <u8g2.h>
 #include <raspi_gpio_hal.h>
-    // #include <wiringPiI2C.h>
-    // #include <wiringPi.h>
 }
 
 // Multiplexer TCA9548A address
@@ -23,13 +23,13 @@ DisplayBroker::DisplayBroker()
     u8g2_Setup_ssd1306_i2c_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_sw_i2c, u8x8_gpio_and_delay_raspi_gpio_hal);
 
 
-    // int tca_fd(0);
-    // this->selectI2CDevice(tca_fd, TCA9548A_ADDR); // Example I2C address
-    // if (tca_fd < 0)
-    // {
-    //     fprintf(stderr, "Nelze inicializovat TCA9548A!\n");
-    //     return;
-    // }
+    int tca_fd(0);
+    this->selectI2CDevice(tca_fd, TCA9548A_ADDR); // Example I2C address
+    if (tca_fd < 0)
+    {
+        fprintf(stderr, "Nelze inicializovat TCA9548A!\n");
+        return;
+    }
 }
 
 DisplayBroker::~DisplayBroker() {}
@@ -43,7 +43,7 @@ int DisplayBroker::selectI2CDevice(int fd, int channel)
         return 1;
     }
 
-    // wiringPiI2CWrite(fd, 1 << channel); // set multiplexer to channel
+    wiringPiI2CWrite(fd, 1 << channel); // set multiplexer to channel
 
     return 0;
 }
