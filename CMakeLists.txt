@@ -27,13 +27,6 @@ include(cmake/CPM.cmake)
 # PackageProject.cmake will be used to make our target installable
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
-CPMAddPackage(
-    NAME fmt
-    GIT_TAG 11.0.2
-    GITHUB_REPOSITORY fmtlib/fmt
-    OPTIONS "FMT_INSTALL YES" # create an installable target
-)
-
 # u8g2 main
 CPMAddPackage(
     NAME u8g2
@@ -75,7 +68,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>
 # ---- Create an installable target ----
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
+target_link_libraries(${PROJECT_NAME} PRIVATE)
 
 # include directories
 target_include_directories(
@@ -105,5 +98,4 @@ packageProject(
     INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
     VERSION_HEADER "${VERSION_HEADER_LOCATION}"
     COMPATIBILITY SameMajorVersion
-    DEPENDENCIES "fmt 9.1.0"
 )

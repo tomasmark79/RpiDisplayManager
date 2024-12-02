@@ -10,12 +10,7 @@ class DisplayBroker
   private:
 
     int selectI2CChannel(int channel);
-
-    bool SetupTest();
-    void EndTest();
-    void TestLoop();
-
-    int use_u8g2();
+    int FourOledScenarioVia_u8g2();
 };
 
 #endif // __DISPLAYBROKER_H__
